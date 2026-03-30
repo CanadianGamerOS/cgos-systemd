@@ -1,4 +1,4 @@
-# Maintainer: canadiangamerOS <https://gitlab.com/canadiangamerOS/>
+# Maintainer: canadiangamerOS <https://gitlab.com/canadiangamerOS/cgos-systemd>
 # Based on the Arch Linux systemd PKGBUILD
 # Fork: cgos-systemd — systemd without birthDate/age-verification fields
 
@@ -13,7 +13,7 @@ pkgver=261
 pkgrel=1
 pkgdesc="System and Service Manager (CGOS fork — no birthDate field)"
 arch=(x86_64)
-url="https://gitlab.com/canadiangamerOS/"
+url="https://gitlab.com/canadiangamerOS/cgos-systemd"
 license=(
   GPL-2.0-or-later
   LGPL-2.1-or-later
@@ -54,7 +54,7 @@ makedepends=(
   python-jinja
   python-pyelftools
 )
-source=("cgos-systemd::git+https://gitlab.com/canadiangamerOS/cgos-systemd.git")
+source=("cgos-systemd::git+https://gitlab.com/canadiangamerOS/cgos-systemd.git#branch=main")
 sha256sums=('SKIP')
 
 build() {

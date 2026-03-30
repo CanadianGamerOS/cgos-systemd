@@ -16,7 +16,7 @@ System and Service Manager
 
 ## CGOS Fork
 
-This repository is **cgos-systemd**, a fork of [systemd](https://github.com/systemd/systemd) maintained as part of the [CGOS](https://gitlab.com/canadiangamerOS/) project — a Linux distribution focused on simplicity and user freedom.
+This repository is **cgos-systemd**, a fork of [systemd](https://github.com/systemd/systemd) maintained as part of the [CGOS](https://gitlab.com/canadiangamerOS/cgos-systemd) project — a Linux distribution focused on simplicity and user freedom.
 
 ### What's different from upstream
 
@@ -27,7 +27,7 @@ This repository is **cgos-systemd**, a fork of [systemd](https://github.com/syst
 
 Contributions are welcome! Please follow these steps:
 
-1. **Fork** [cgos-systemd](https://gitlab.com/canadiangamerOS/) on GitLab.
+1. **Fork** [cgos-systemd](https://gitlab.com/canadiangamerOS/cgos-systemd) on GitLab.
 2. **Branch** off `main` for your change: `git checkout -b my-feature`.
 3. Follow the upstream [Coding Style Guidelines](docs/CODING_STYLE.md) and [Hacking guide](docs/HACKING.md) — they apply here too.
 4. **Do not re-introduce** the `birthDate` field or any age-verification logic. PRs that add it back will be closed.
@@ -35,7 +35,7 @@ Contributions are welcome! Please follow these steps:
    `Co-developed-by: Claude Sonnet 4.6 <noreply@anthropic.com>`
 6. Open a Pull Request against `main` on this repo. Reference any related upstream systemd PR or issue if applicable.
 
-For bugs or questions specific to the CGOS project, open an issue in the main [CGOS repository](https://gitlab.com/canadiangamerOS/).
+For bugs or questions specific to the CGOS project, open an issue in the main [CGOS repository](https://gitlab.com/canadiangamerOS/cgos-systemd).
 
 ---
 
