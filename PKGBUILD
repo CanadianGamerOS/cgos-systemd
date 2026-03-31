@@ -20,7 +20,6 @@ license=(
 makedepends=(
   acl
   audit
-  clang
   cryptsetup
   curl
   dbus
@@ -31,23 +30,18 @@ makedepends=(
   iproute2
   kbd
   kmod
-  lib32-gcc-libs
   libcap
   libgcrypt
   libidn2
   libp11-kit
   libseccomp
   libxkbcommon
-  lld
-  llvm
   lz4
   meson
   openssl
   pam
   libarchive
   python-jinja
-  python-pefile
-  python-pyelftools
   tpm2-tss
   util-linux-libs
   xz
@@ -59,7 +53,7 @@ sha256sums=('SKIP')
 
 build() {
   local meson_options=(
-    -Dbootloader=enabled
+    -Dbootloader=disabled
     -Dbpf-framework=disabled
     -Ddefault-dnssec=no
     -Dfirstboot=false
