@@ -64,6 +64,7 @@ sha256sums=('SKIP')
 build() {
   local meson_options=(
     -Dbootloader=enabled
+    -Defi-cc=clang
     -Dbpf-framework=disabled
     -Dtests=false
     -Ddefault-dnssec=no
