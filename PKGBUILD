@@ -70,6 +70,7 @@ build() {
     -Drpmmacrosdir=no
     -Dsysusers=false
     -Dtests=false
+    -Dpwquality=disabled
     -Db_lto=true
     -Db_pie=true
   )
