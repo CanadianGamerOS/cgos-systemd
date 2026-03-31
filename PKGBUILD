@@ -55,6 +55,7 @@ makedepends=(
   llvm
   meson
   python-jinja
+  python-pefile
   python-pyelftools
 )
 source=("cgos-systemd::git+https://gitlab.com/canadiangamerOS/cgos-systemd.git#branch=main")
