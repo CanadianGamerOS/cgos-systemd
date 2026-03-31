@@ -48,8 +48,11 @@ depends=(
   zstd
 )
 makedepends=(
+  clang
   git
   gperf
+  lld
+  llvm
   meson
   python-jinja
   python-pyelftools
@@ -59,6 +62,7 @@ sha256sums=('SKIP')
 
 build() {
   local meson_options=(
+    -Dbootloader=enabled
     -Dbpf-framework=disabled
     -Dtests=false
     -Ddefault-dnssec=no
