@@ -167,7 +167,8 @@ package_cgos-systemd-resolvconf() {
 package_cgos-systemd-sysvcompat() {
   pkgdesc="cgos-systemd SysV compatibility scripts"
   depends=("cgos-systemd=${pkgver}")
-  conflicts=(sysvinit)
+  provides=(systemd-sysvcompat)
+  conflicts=(sysvinit systemd-sysvcompat)
 
   install -d "$pkgdir/usr/bin"
   for tool in halt poweroff reboot runlevel shutdown telinit; do
