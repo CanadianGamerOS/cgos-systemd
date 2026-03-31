@@ -1,6 +1,5 @@
 # Maintainer: canadiangamerOS <https://gitlab.com/canadiangamerOS/cgos-systemd>
 # Based on the Arch Linux systemd PKGBUILD
-# Fork: cgos-systemd — systemd without birthDate/age-verification fields
 
 pkgbase=cgos-systemd
 pkgname=(
@@ -11,86 +10,79 @@ pkgname=(
 )
 pkgver=261
 pkgrel=1
-pkgdesc="System and Service Manager (CGOS fork — no birthDate field)"
+pkgdesc="System and Service Manager (CGOS fork)"
 arch=(x86_64)
 url="https://gitlab.com/canadiangamerOS/cgos-systemd"
 license=(
   GPL-2.0-or-later
   LGPL-2.1-or-later
 )
-depends=(
+makedepends=(
   acl
   audit
-  bash
+  clang
   cryptsetup
   curl
   dbus
   elfutils
   glib2
   gnutls
+  git
+  gperf
   iproute2
   kbd
   kmod
+  lib32-gcc-libs
   libcap
   libgcrypt
   libidn2
   libp11-kit
   libseccomp
   libxkbcommon
+  lld
+  llvm
   lz4
+  meson
   openssl
   pam
   libarchive
+  python-jinja
+  python-pefile
+  python-pyelftools
   tpm2-tss
   util-linux-libs
   xz
   zlib
   zstd
 )
-makedepends=(
-  clang
-  git
-  gperf
-  lld
-  llvm
-  meson
-  python-jinja
-  python-pefile
-  python-pyelftools
-)
 source=("cgos-systemd::git+https://gitlab.com/canadiangamerOS/cgos-systemd.git#branch=main")
 sha256sums=('SKIP')
 
 build() {
-  export CC=clang
-  export CXX=clang++
-
   local meson_options=(
     -Dbootloader=enabled
     -Dbpf-framework=disabled
-    -Dtests=false
     -Ddefault-dnssec=no
     -Dfirstboot=false
     -Dinstall-tests=false
     -Dldconfig=false
     -Dman=disabled
-    -Dsysusers=false
     -Drpmmacrosdir=no
+    -Dsysusers=false
+    -Dtests=false
     -Db_lto=true
     -Db_pie=true
   )
 
-  # artix-meson is a wrapper around meson setup used on Artix/Arch
   if command -v artix-meson &>/dev/null; then
     artix-meson "$pkgbase" build "${meson_options[@]}"
+  elif command -v arch-meson &>/dev/null; then
+    arch-meson "$pkgbase" build "${meson_options[@]}"
   else
     meson setup "$pkgbase" build --prefix=/usr "${meson_options[@]}"
   fi
-  meson compile -C build
-}
 
-check() {
-  meson test -C build --print-errorlogs -q
+  meson compile -C build
 }
 
 package_cgos-systemd-libs() {
@@ -111,14 +103,14 @@ package_cgos-systemd-libs() {
   )
   conflicts=(systemd-libs libsystemd)
 
-  meson install -C build --destdir "$pkgdir" \
+  meson install -C build --no-rebuild --destdir "$pkgdir" \
     --tags libudev,libsystemd,devel
 }
 
 package_cgos-systemd() {
   pkgdesc="$pkgdesc"
   depends=(
-    "${pkgname%-libs}-libs=${pkgver}"
+    "cgos-systemd-libs=${pkgver}"
     acl audit bash cryptsetup curl dbus elfutils glib2 gnutls
     iproute2 kbd kmod libcap libgcrypt libidn2 libp11-kit libseccomp
     libxkbcommon lz4 openssl pam libarchive tpm2-tss util-linux-libs
@@ -147,7 +139,7 @@ package_cgos-systemd() {
     etc/udev/udev.conf
   )
 
-  meson install -C build --destdir "$pkgdir"
+  meson install -C build --no-rebuild --destdir "$pkgdir"
 
   # remove libs/devel handled by cgos-systemd-libs
   rm -rf \
@@ -160,7 +152,7 @@ package_cgos-systemd() {
     "$pkgdir"/usr/share/pkgconfig/udev.pc
 
   # remove sysvcompat binaries handled by cgos-systemd-sysvcompat
-  rm -f "$pkgdir"/usr/bin/{halt,poweroff,reboot,runlevel,shutdown,telinit}
+  rm -f "$pkgdir"/usr/bin/{halt,init,poweroff,reboot,shutdown}
 
   # remove resolvconf handled by cgos-systemd-resolvconf
   rm -f "$pkgdir"/usr/bin/resolvconf
@@ -169,6 +161,10 @@ package_cgos-systemd() {
   rm -f \
     "$pkgdir"/usr/share/factory/etc/issue \
     "$pkgdir"/usr/share/factory/etc/nsswitch.conf
+  sed -i \
+    -e '/^C \/etc\/nsswitch\.conf/d' \
+    -e '/^C \/etc\/issue/d' \
+    "$pkgdir"/usr/lib/tmpfiles.d/etc.conf
 
   install -Dm644 "$pkgbase/LICENSE.GPL2" -t "$pkgdir/usr/share/licenses/$pkgname/"
   install -Dm644 "$pkgbase/LICENSE.LGPL2.1" -t "$pkgdir/usr/share/licenses/$pkgname/"
@@ -177,7 +173,7 @@ package_cgos-systemd() {
 package_cgos-systemd-resolvconf() {
   pkgdesc="cgos-systemd resolvconf replacement (passthrough to resolved)"
   depends=("cgos-systemd=${pkgver}")
-  provides=(resolvconf)
+  provides=(resolvconf openresolv)
   conflicts=(resolvconf)
 
   install -d "$pkgdir/usr/bin"
@@ -194,8 +190,9 @@ package_cgos-systemd-sysvcompat() {
   conflicts=(sysvinit systemd-sysvcompat)
 
   install -d "$pkgdir/usr/bin"
-  for tool in halt poweroff reboot runlevel shutdown telinit; do
-    ln -s /usr/bin/systemctl "$pkgdir/usr/bin/$tool"
+  ln -s ../lib/systemd/systemd "$pkgdir/usr/bin/init"
+  for tool in halt poweroff reboot shutdown; do
+    ln -s systemctl "$pkgdir/usr/bin/$tool"
   done
 
   install -d "$pkgdir/usr/share/licenses/$pkgname"
