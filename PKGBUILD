@@ -25,7 +25,6 @@ makedepends=(
   curl
   dbus
   elfutils
-  glib2
   gnutls
   git
   gperf
@@ -70,7 +69,22 @@ build() {
     -Drpmmacrosdir=no
     -Dsysusers=false
     -Dtests=false
+    # disable optional features not needed for a live ISO
+    -Dapparmor=disabled
+    -Dhomed=disabled
+    -Dimportd=disabled
+    -Dlibfido2=disabled
+    -Dmicrohttpd=disabled
+    -Dpasswdqc=disabled
+    -Dpcre2=disabled
+    -Dpolkit=disabled
     -Dpwquality=disabled
+    -Dqrencode=disabled
+    -Dremote=disabled
+    -Dselinux=disabled
+    -Dsysupdate=disabled
+    -Dvmspawn=disabled
+    -Dxenctrl=disabled
     -Db_lto=true
     -Db_pie=true
   )
@@ -114,7 +128,7 @@ package_cgos-systemd() {
     "cgos-systemd-libs=${pkgver}"
     acl audit bash cryptsetup curl dbus elfutils glib2 gnutls
     iproute2 kbd kmod libcap libgcrypt libidn2 libp11-kit libseccomp
-    libxkbcommon lz4 openssl pam libarchive tpm2-tss util-linux-libs
+    lz4 openssl pam libarchive tpm2-tss util-linux-libs
     xz zlib zstd
   )
   provides=(
