@@ -141,11 +141,26 @@ package_cgos-systemd() {
 
   meson install -C build --destdir "$pkgdir"
 
-  # remove libs handled by cgos-systemd-libs
-  rm -r \
+  # remove libs/devel handled by cgos-systemd-libs
+  rm -rf \
     "$pkgdir"/usr/lib/libsystemd* \
     "$pkgdir"/usr/lib/libudev* \
-    "$pkgdir"/usr/include
+    "$pkgdir"/usr/include \
+    "$pkgdir"/usr/lib/pkgconfig/libsystemd.pc \
+    "$pkgdir"/usr/lib/pkgconfig/libudev.pc \
+    "$pkgdir"/usr/share/pkgconfig/systemd.pc \
+    "$pkgdir"/usr/share/pkgconfig/udev.pc
+
+  # remove sysvcompat binaries handled by cgos-systemd-sysvcompat
+  rm -f "$pkgdir"/usr/bin/{halt,poweroff,reboot,runlevel,shutdown,telinit}
+
+  # remove resolvconf handled by cgos-systemd-resolvconf
+  rm -f "$pkgdir"/usr/bin/resolvconf
+
+  # remove files that conflict with filesystem package
+  rm -f \
+    "$pkgdir"/usr/share/factory/etc/issue \
+    "$pkgdir"/usr/share/factory/etc/nsswitch.conf
 
   install -Dm644 "$pkgbase/LICENSE.GPL2" -t "$pkgdir/usr/share/licenses/$pkgname/"
   install -Dm644 "$pkgbase/LICENSE.LGPL2.1" -t "$pkgdir/usr/share/licenses/$pkgname/"
