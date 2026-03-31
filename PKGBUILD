@@ -62,9 +62,11 @@ source=("cgos-systemd::git+https://gitlab.com/canadiangamerOS/cgos-systemd.git#b
 sha256sums=('SKIP')
 
 build() {
+  export CC=clang
+  export CXX=clang++
+
   local meson_options=(
     -Dbootloader=enabled
-    -Defi-cc=clang
     -Dbpf-framework=disabled
     -Dtests=false
     -Ddefault-dnssec=no
