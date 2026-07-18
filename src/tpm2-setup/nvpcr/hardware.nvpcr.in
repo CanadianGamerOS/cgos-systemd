@@ -1,5 +1,0 @@
-{
-    "name" : "hardware",
-    "algorithm" : "sha256",
-    "nvIndex" : {{TPM2_NVPCR_BASE + 0}}
-}

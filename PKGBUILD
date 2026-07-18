@@ -48,30 +48,57 @@ makedepends=(
   zlib
   zstd
 )
-source=("cgos-systemd::git+https://gitlab.com/canadiangamerOS/cgos-systemd.git#branch=main")
-sha256sums=('SKIP')
+source=("cgos-systemd::git+https://gitlab.com/canadiangamerOS/cgos-systemd.git#branch=main"
+    'systemd-hook'
+    '20-systemd-sysusers.hook'
+    '21-systemd-tmpfiles.hook'
+    '25-systemd-binfmt.hook'
+    '25-systemd-catalog.hook'
+    '25-systemd-hwdb.hook'
+    '25-systemd-sysctl.hook'
+    '30-systemd-daemon-reload-system.hook'
+    '30-systemd-daemon-reload-user.hook'
+    '35-systemd-enqueue-marked.hook'
+    '35-systemd-udev-reload.hook'
+    '35-systemd-update.hook'
+
+)
+sha256sums=('SKIP'
+    'SKIP'
+    'SKIP'
+    'SKIP'
+    'SKIP'
+    'SKIP'
+    'SKIP'
+    'SKIP'
+    'SKIP'
+    'SKIP'
+    'SKIP'
+    'SKIP'
+    'SKIP'
+)
 
 build() {
   local meson_options=(
-    -Dbootloader=disabled
+    -Dbootloader=enabled
     -Dbpf-framework=disabled
     -Ddefault-dnssec=no
     -Dfirstboot=false
     -Dinstall-tests=false
     -Dldconfig=false
-    -Dman=disabled
+    -Dman=enabled
     -Drpmmacrosdir=no
-    -Dsysusers=false
+    -Dsysusers=true
     -Dtests=false
     # disable optional features not needed for a live ISO
     -Dapparmor=disabled
     -Dhomed=disabled
     -Dimportd=disabled
-    -Dlibfido2=disabled
+    -Dlibfido2=enabled
     -Dmicrohttpd=disabled
     -Dpasswdqc=disabled
-    -Dpcre2=disabled
-    -Dpolkit=disabled
+    -Dpcre2=enabled
+    -Dpolkit=enabled
     -Dpwquality=disabled
     -Dqrencode=disabled
     -Dremote=disabled
@@ -175,8 +202,13 @@ package_cgos-systemd() {
     -e '/^C \/etc\/issue/d' \
     "$pkgdir"/usr/lib/tmpfiles.d/etc.conf
 
+  # pacman/libalpm hooks + helper script
+  install -Dm644 "$srcdir"/*.hook -t "$pkgdir/usr/share/libalpm/hooks/"
+  install -Dm755 "$srcdir/systemd-hook" "$pkgdir/usr/share/libalpm/scripts/systemd-hook"
+
   install -Dm644 "$pkgbase/LICENSE.GPL2" -t "$pkgdir/usr/share/licenses/$pkgname/"
   install -Dm644 "$pkgbase/LICENSE.LGPL2.1" -t "$pkgdir/usr/share/licenses/$pkgname/"
+
 }
 
 package_cgos-systemd-resolvconf() {
