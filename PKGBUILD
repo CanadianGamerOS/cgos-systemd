@@ -23,6 +23,7 @@ makedepends=(
   cryptsetup
   curl
   dbus
+  docbook-xsl
   elfutils
   gnutls
   git
@@ -36,6 +37,7 @@ makedepends=(
   libp11-kit
   libseccomp
   libxkbcommon
+  libxslt
   lz4
   meson
   openssl
