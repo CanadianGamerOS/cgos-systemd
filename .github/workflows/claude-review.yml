@@ -67,7 +67,7 @@ jobs:
 
       - name: Fetch PR context and create tracking comment
         id: context
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
         with:
           script: |
             const owner = context.repo.owner;
@@ -130,7 +130,7 @@ jobs:
       # archive: false makes upload-artifact use the file's basename
       # (pr-context.json) as the artifact name, ignoring the name input.
       - name: Upload PR context
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           path: pr-context.json
           archive: false
@@ -145,7 +145,7 @@ jobs:
       id-token: write       # Authenticate with AWS via OIDC
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           # Need full history so git diff <sha>~1..<sha> works for all PR commits.
           fetch-depth: 0
@@ -156,7 +156,7 @@ jobs:
         run: git fetch origin "pull/${PR_NUMBER}/head:pr-review"
 
       - name: Download PR context
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
           name: pr-context.json
 
@@ -169,7 +169,7 @@ jobs:
           sudo apt-get update && sudo apt-get install -y bubblewrap socat
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ROLE_NAME }}
           role-session-name: GitHubActions-Claude-${{ github.run_id }}
@@ -177,7 +177,7 @@ jobs:
 
       - name: Run Claude Code
         id: claude
-        uses: anthropics/claude-code-action@26ec041249acb0a944c0a47b6c0c13f05dbc5b44
+        uses: anthropics/claude-code-action@925afb53776cf1a2b738c6bdbed37b4d4000ef13
         with:
           use_bedrock: "true"
           # Required by claude-code-action even though Claude itself doesn't
@@ -398,7 +398,7 @@ jobs:
 
       - name: Upload review result
         if: always()
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           path: review-result.json
           if-no-files-found: ignore
@@ -417,12 +417,12 @@ jobs:
       - name: Download review result
         if: needs.review.result == 'success'
         continue-on-error: true
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
           name: review-result.json
 
       - name: Post review comments
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
         env:
           REVIEW_RESULT: ${{ needs.review.result }}
           PR_NUMBER: ${{ needs.setup.outputs.pr_number }}
